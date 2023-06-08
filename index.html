@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      display: inline-block;
+      width: 200px;
+      height: 300px;
+      border: 1px solid black;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    .item {
+      width: 50px;
+      height: 50px;
+      background-color: blue;
+      color: white;
+      text-align: center;
+      line-height: 50px;
+      margin-bottom: 5px;
+      cursor: move;
+    }
+
+    .success {
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container1">
+    <div class="item" draggable="true">Item 1</div>
+    <div class="item" draggable="true">Item 2</div>
+    <div class="item" draggable="true">Item 3</div>
+  </div>
+
+  <div class="container" id="container2"></div>
+
+  <button onclick="resetContainers()">Reset</button>
+
+  <script>
+    var draggedItem = null;
+
+    // Event listeners for drag and drop events
+    document.addEventListener("dragstart", function(event) {
+      draggedItem = event.target;
+      event.dataTransfer.setData("text/plain", event.target.innerText);
+      event.target.style.opacity = "0.5";
+    });
+
+    document.addEventListener("dragend", function(event) {
+      event.target.style.opacity = "1";
+    });
+
+    document.addEventListener("dragover", function(event) {
+      event.preventDefault();
+    });
+
+    document.addEventListener("drop", function(event) {
+      event.preventDefault();
+      var container = event.target.closest(".container");
+      if (container && container.id === "container2") {
+        container.appendChild(draggedItem.cloneNode(true));
+        draggedItem.classList.add("success");
+      }
+    });
+
+    // Reset button click event
+    function resetContainers() {
+      var container1 = document.getElementById("container1");
+      var container2 = document.getElementById("container2");
+
+      while (container1.firstChild) {
+        container1.firstChild.remove();
+      }
+
+      while (container2.firstChild) {
+        container2.firstChild.remove();
+      }
+
+      container1.innerHTML = `
+        <div class="item" draggable="true">Item 1</div>
+        <div class="item" draggable="true">Item 2</div>
+        <div class="item" draggable="true">Item 3</div>
+      `;
+    }
+  </script>
+</body>
+</html>
